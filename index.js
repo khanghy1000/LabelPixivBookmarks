@@ -603,20 +603,25 @@ async function clearBookmarkTags(works) {
 async function handleClearBookmarkTags(evt) {
   evt.preventDefault();
   const selected = [
-    ...document.querySelectorAll("label>div[aria-disabled='true']"),
+    ...document.querySelectorAll("input.sc-1838c2ca-4:checked"),
   ];
   if (!selected.length) return;
-
   const works = selected
     .map((el) => {
-      const middleChild = Object.values(
+      const fiber = Object.values(
         el.parentNode.parentNode.parentNode.parentNode,
-      )[0]["child"];
-      const work = middleChild["memoizedProps"]["work"];
-      work.associatedTags =
-        middleChild["child"]["memoizedProps"]["associatedTags"] || [];
-      work.bookmarkId = middleChild["memoizedProps"]["bookmarkId"];
-      return work;
+      )[0];
+      let node = fiber;
+      for (let i = 0; i < 15; i++) {
+        node = node.return;
+        if (node?.memoizedProps?.work) break;
+      }
+      const work = node.memoizedProps.work;
+        work.associatedTags = node.memoizedProps.work.associatedTags?.length
+          ? node.memoizedProps.work.associatedTags
+          : (node.memoizedProps.tagList || []);
+        work.bookmarkId = node.memoizedProps.bookmarkId;
+        return work;
     })
     .filter((work) => work.associatedTags.length);
   await clearBookmarkTags(works);
@@ -3061,17 +3066,11 @@ async function initializeVariables() {
     const clearTag = theme ? "jbzOgz" : "dydUg";
     const clearTagsButton = document.querySelector("#clear_tags_button");
     if (clearTagsButton) {
-      const clearButtonBgColor = theme
-        ? "rgba(255, 255, 255, 0.08)"
-        : "rgba(0, 0, 0, 0.04)";
-      const clearButtonTextColor = theme
-        ? "rgba(255, 255, 255, 0.88)"
-        : "rgba(0, 0, 0, 0.88)";
-      clearTagsButton.querySelector("div").style.backgroundColor =
-        clearButtonBgColor;
-      clearTagsButton.querySelector("div > div").style.color =
-        clearButtonTextColor;
-    }
+       const themeClass = theme ? "iKbYpV" : "huvZzJ";
+       const prevThemeClass = theme ? "huvZzJ" : "iKbYpV";
+       clearTagsButton.querySelector(".sc-294b2a21-0")
+           ?.classList.replace(prevThemeClass, themeClass);
+      }
   }).observe(themeDiv, { attributes: true });
 
   synonymDict = getValue("synonymDict", {});
