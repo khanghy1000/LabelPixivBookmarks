@@ -36,13 +36,10 @@ let uid,
   theme,
   showWorkTags,
   generator,
+  // workType,
   feature,
   turboMode,
   cachedBookmarks = {},
-  root,
-  buttonContainer,
-  clearTagsButton,
-  removeTagButton,
   DEBUG;
 // noinspection TypeScriptUMDGlobal,JSUnresolvedVariable
 let unsafeWindow_ = unsafeWindow,
@@ -3104,11 +3101,11 @@ async function injectElements() {
   if (DEBUG) console.log("[Label Bookmarks] Start Injecting");
   const textColor = theme ? "text-lp-dark" : "text-lp-light";
   const pageBody = document.querySelector(PAGE_BODY);
-  root = document.querySelector("nav.sc-66d39641-0");
+  const root = document.querySelector("nav");
   if (!root) console.log("[Label Bookmarks] Navbar Not Found");
   root.classList.add("d-flex");
-  buttonContainer = document.createElement("span");
-  buttonContainer.className = "flex items-center gap-8 ms-auto";
+  const buttonContainer = document.createElement("span");
+  buttonContainer.className = "flex-grow-1 justify-content-end d-flex";
   buttonContainer.id = "label_bookmarks_buttons";
   const gClass = generator ? "" : "d-none";
   const fClass = feature ? "" : "d-none";
@@ -3120,7 +3117,7 @@ async function injectElements() {
       `;
 
   const clearTagsText = lang.includes("zh") ? "清除标签" : "Clear Tags";
-  clearTagsButton = document.createElement("div");
+  const clearTagsButton = document.createElement("div");
   clearTagsButton.id = "clear_tags_button";
   const pillButtonStyle = `
     display: none;
@@ -3155,7 +3152,7 @@ async function injectElements() {
   clearTagsButton.addEventListener("click", handleClearBookmarkTags);
   unsafeWindow.clearTags = handleClearBookmarkTags;
 
-  removeTagButton = document.createElement("div");
+  const removeTagButton = document.createElement("div");
   removeTagButton.id = "remove_tag_button";
   removeTagButton.style.cssText = pillButtonStyle;
   removeTagButton.setAttribute("role", "button");
