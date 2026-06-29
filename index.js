@@ -2,7 +2,7 @@
 // @name         Pixiv收藏夹自动标签
 // @name:en      Label Pixiv Bookmarks
 // @namespace    http://tampermonkey.net/
-// @version      5.19
+// @version      5.20
 // @description  自动为Pixiv收藏夹内图片打上已有的标签，并可以搜索收藏夹
 // @description:en    Automatically add existing labels for images in the bookmarks, and users are able to search the bookmarks
 // @author       philimao
@@ -20,7 +20,7 @@
 
 // ==/UserScript==
 
-const version = "5.19";
+const version = "5.20";
 const latest = `♢ 处理Pixiv组件类名更新
 ♢ Update constants due to change of element class names
 ♢ 并非所有功能都已恢复，仅验证了设置标签功能
@@ -51,6 +51,7 @@ let unsafeWindow_ = unsafeWindow,
 
 // selectors
 const BANNER = ".bg-surface1 > div:first-child";
+const NAV = ".bg-surface1 nav";
 const THEME_CONTAINER = "html";
 const WORK_SECTION = "section"; // 作品section，从works->pagination
 const WORK_CONTAINER = "section ul"; // 仅包含作品
@@ -3101,7 +3102,7 @@ async function injectElements() {
   if (DEBUG) console.log("[Label Bookmarks] Start Injecting");
   const textColor = theme ? "text-lp-dark" : "text-lp-light";
   const pageBody = document.querySelector(PAGE_BODY);
-  const root = document.querySelector("nav");
+  const root = document.querySelector(NAV);
   if (!root) console.log("[Label Bookmarks] Navbar Not Found");
   root.classList.add("d-flex");
   const buttonContainer = document.createElement("span");
@@ -4031,7 +4032,7 @@ function registerMenu() {
   "use strict";
   loadResources();
   registerMenu();
-  waitForDom("nav")
+  waitForDom(NAV)
     .then(initializeVariables)
     .then(createModalElements)
     .then(injectElements);
